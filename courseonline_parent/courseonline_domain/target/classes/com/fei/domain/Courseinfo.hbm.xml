@@ -7,20 +7,20 @@
 <hibernate-mapping>
     <class name="com.fei.domain.Courseinfo" table="bc_courseinfo" catalog="courseonline">
         <id name="courseId" type="java.lang.String">
-            <column name="course_id" length="32" />
-            <generator class="uuid" />
+            <column name="course_id" length="50" />
+            <generator class="assigned" />
         </id>
-        <many-to-one name="teacher" class="com.fei.domain.Teacher" fetch="select">
+        <many-to-one name="teacher" lazy="false" class="com.fei.domain.Teacher" fetch="select">
             <column name="teacher_id" />
         </many-to-one>
         <property name="courseJj" type="java.lang.String">
             <column name="course_jj" length="50" />
         </property>
         <property name="courseName" type="java.lang.String">
-            <column name="course_name" length="10" not-null="true" />
+            <column name="course_name" length="25" not-null="true" />
         </property>
-        <property name="courseType" type="java.lang.Integer">
-            <column name="course_type" />
+        <property name="courseType" type="java.lang.String">
+            <column name="course_type"  length="20"/>
         </property>
         <property name="courseFbrq" type="java.lang.String">
             <column name="course_fbrq" length="20" />
@@ -34,5 +34,11 @@
         <property name="courseClicksum" type="java.lang.Integer">
             <column name="course_clicksum" />
         </property>
+        <property name="imageurl" type="java.lang.String">
+            <column name="imageurl" length="255"/>
+        </property>
     </class>
+     <query name="course.delete">
+    	DELETE FROM Courseinfo  WHERE course_id=?
+    </query>
 </hibernate-mapping>

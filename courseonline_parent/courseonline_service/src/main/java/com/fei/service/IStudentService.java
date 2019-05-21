@@ -21,4 +21,9 @@ public interface IStudentService {
 
 	public List<Studentinfo> findAll();
 
+	public boolean allowLogin(String id, String password);
+
+	public List<Studentinfo> findNewById(String studentId);
+
+
 }

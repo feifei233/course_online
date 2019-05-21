@@ -20,5 +20,16 @@ public class TeacherDaoImpl extends BaseDaoImpl<Teacher> implements ITeacherDao 
 	return list;
 	}
 
+	@Override
+	public Teacher findStudentByNameAndPassword(Integer id, String password) {
+		String hql="FROM Teacher t WHERE t.teacherId=? and t.password=?";
+		List<Teacher> list = (List<Teacher>) this.getHibernateTemplate().find(hql,id,password);
+		if(list!=null  && list.size()>0){
+			return list.get(0);
+		}
+		return null;
+	}
+
+
 	
 }

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -28,6 +29,7 @@
 	type="text/javascript"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/js/jquery.ocupload-1.1.2.js"></script>
 <script type="text/javascript">
+	
 	function doAdd(){
 		$('#addCourseWindow').window("open");
 	}
@@ -61,9 +63,30 @@
 	}
 	
 	function doExport(){
-		//发送请求，请求Action，进行文件下载
-		window.location.href = "courseAction_exportXls.action";
-		//$.post("subareaAction_exportXls.action");
+		//获取数据表格中所有选中的行，返回数组对象
+		var rows = $('#grid').datagrid('getSelections');
+		if(rows.length == 0){
+			//没有选中记录，弹出提示
+			$.messager.alert("提示信息","请选择需要下载的文件！","warning");
+		}else if(rows.length==1){
+			$.messager.confirm("下载确认","你确定要下载选中的文件吗？",function(r){
+				if(r){
+					
+					var array = new Array();
+					//确定,发送请求
+					for(var i=0;i<rows.length;i++){
+						//var teacher = rows[i];//json对象
+						var id = rows[i].courseId;
+						array.push(id);
+					}
+					var ids = array.join(",");//1,2,3,4,5
+					location.href = "courseAction_downloadFile.action?ids="+ids;
+				}
+			});
+		}
+		else{
+			$.messager.alert("提示信息","每次只能选择一个文件下载！","error");
+		}
 	}
 	
 	//工具栏
@@ -84,7 +107,7 @@
 		handler : doDelete
 	},{
 		id : 'button-export',
-		text : '导出',
+		text : '下载',
 		iconCls : 'icon-undo',
 		handler : doExport
 	}];
@@ -113,11 +136,16 @@
 		width : 120,
 		align : 'center'
 	}, {
-		field : 'courseFbtq',
+		field : 'courseFbrq',
 		title : '发布日期',
 		width : 120,
 		align : 'center'
 	}, {
+		field : 'url',
+		title : '文件位置',
+		width : 120,
+		align : 'center'
+	},{
 		field : 'courseClicksum',
 		title : '点击次数',
 		width : 120,
@@ -128,7 +156,7 @@
 		width : 200,
 		align : 'center',
 		formatter : function(data,row, index){
-			if(data=="0"){
+			if(data=="1"){
 				return "公开"
 			}else{
 				return "不公开";
@@ -148,6 +176,7 @@
 			}
 		}
 	}] ];
+	
 	
 	$(function(){
 		// 先将body隐藏，再显示，不会出现页面刷新效果
@@ -173,17 +202,17 @@
 		
 		// 添加、修改区域窗口
 		$('#addCourseWindow').window({
-	        title: '添加学生',
+	        title: '添加教程',
 	        width: 400,
 	        modal: true,
 	        shadow: true,
 	        closed: true,
-	        height: 400,
+	        height: 300,
 	        resizable:false
 	    });
 		// 添加修改教师窗口
 		$('#editCourseWindow').window({
-	        title: '修改学生',
+	        title: '修改教程',
 	        width: 400,
 	        modal: true,
 	        shadow: true,
@@ -243,21 +272,93 @@
 	</div>
 	<div class="easyui-window" title="教程信息添加" id="addCourseWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
 		<div region="north" style="height:31px;overflow:hidden;" split="false" border="false" >
-			<div class="datagrid-toolbar">
-				<a id="import" icon="icon-redo" href="#" class="easyui-linkbutton" plain="true" >上传</a>
-			</div>
+			<!--   <div class="datagrid-toolbar">
+				<a id="uploadfile" icon="icon-redo" href="#" class="easyui-linkbutton" plain="true" >上传</a>
+			</div>-->
 		</div>
 		
 		<div region="center" style="overflow:auto;padding:5px;" border="false">
-			<form id="addCourseForm"  action="courseAction_upload.action" method="post" enctype="multipart/form-data">
+			<form id="addCourseForm"  action="courseAction_add.action" method="post" enctype="multipart/form-data">
 				<table class="table-edit" width="80%" align="center">
 					<tr class="title">
 						<td colspan="2">教程信息</td>
 					</tr>
 					<tr>
-						<td>教程编号</td>
-						<td><input type="text" name="courseId" class="easyui-validatebox" required="true"/></td>
+						<td>选择文件：<input type="file" id="upload" name="upload" class="easyui-filebox" onchange="filefujianChange(this);" required="true"/>
+						</td>		
 					</tr>
+					<tr>
+						<td>选择图片：<input type="file" id="imagefile" name="upload" class="easyui-filebox" onchange="imageChange(this);"/>
+						</td>		
+					</tr>
+					<tr>
+						<td>
+							<script type="text/javascript">
+									
+								function filefujianChange(target) {
+									//检测上传文件的类型 
+									var imgName = $("#upload").val();
+				   
+									  
+								        var fileName = imgName.substring(imgName.lastIndexOf(".")+1).toLowerCase();
+								        if(fileName !="jpg" && fileName !="jpeg" && fileName !="png" && fileName !="doc" && fileName !="gif"
+								        	&& fileName !="docx"&& fileName !="xls" && fileName !="ppt"&& fileName !="pptx" && fileName !="mp4" && fileName !="avi"){
+								        	$.messager.alert("提示信息","请选择正确的格式文件","error");
+								            target.value="";
+								            return;
+								        }
+								      
+								}
+								function iamgeChange(target) {
+									//检测上传文件的类型 
+									var imgName = $("#imagefile").val();
+				   
+									  
+								        var fileName = imgName.substring(imgName.lastIndexOf(".")+1).toLowerCase();
+								        if(fileName !="jpg" && fileName !="jpeg"  && fileName !="png"){
+								        	$.messager.alert("提示信息","请选择正确的格式图片（jpg，jpeg,png）","error");
+								            target.value="";
+								            return;
+								        }
+								      
+								}
+								
+								</script> 
+						
+							<input type="submit" id="uploadfile" value="上传" class="easyui-linkbutton" style="width:200px;align:center"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<font color="red"><s:actionerror/></font>
+						</td>
+					</tr>
+					</table>
+			</form>
+		</div>
+		
+		
+		
+	</div>
+	
+	
+	
+	
+	<div class="easyui-window" title="教程添加修改" id="editCourseWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
+		<div region="north" style="height:31px;overflow:hidden;" split="false" border="false" >
+			<div class="datagrid-toolbar">
+				<a id="editInfo" icon="icon-save" href="#" class="easyui-linkbutton" plain="true" >保存</a>
+			</div>
+		</div>
+		
+		<div region="center" style="overflow:auto;padding:5px;" border="false">
+			<form id="editCourseForm"  action="courseAction_editInfo.action" method="post">
+				<table class="table-edit" width="80%" align="center">
+					<tr class="title">
+						<td colspan="2">教程信息</td>
+					</tr>
+
+					<input type="hidden" name="courseId"/>
 					<tr>
 						<td>教程名称</td>
 						<td><input type="text" name="courseName" class="easyui-validatebox" required="true"/></td>
@@ -272,148 +373,47 @@
 					</tr>
 					<tr>
 						<td>发布日期</td>
-						<td><input type="text" name="courseFbrq" id="time" class="easyui-datebox" required="true"/></td>
+						<td><input type="text" name="courseFbrq" id="time" class="easyui-datetimebox" required="true"/></td>
 					</tr>
 				
 					<input type="hidden" name="courseClicksum" class="easyui-validatebox"/>
-					
+					<input type="hidden" name="url" class="easyui-validatebox"/>
 					<tr>
 						<td>是否公开</td>
 						<td>
-						<script type="text/javascript">
-								$(function(){
-									//为保存按钮绑定事件
-									$("#import").click(function(){
-										//表单校验，如果通过，提交表单
-										var v = $("#addCourseForm").form("validate");
-										if(v){
-											//$("#addStaffForm").form("submit");
-											$("#addCourseForm").submit();
-										}
-									});
-																
-									});
-								
-								
-							</script>
-							<select class="easyui-combobox" name="courseOpen" data-options="panelHeight: 'auto',editable:false" style="width:100px">  
-							    <option value="0">公开</option>  
-							    <option value="1">不公开</option>  
-							</select> 
-						</td>
-					</tr>
-					<tr>
-						<td>发布人</td>
-						<td><input class="easyui-combobox" style="width:100px" name="teacher.teacherId"  
-    							data-options="valueField:'teacherId',textField:'teachername',
-    							url:'teacherAction_listajax.action',panelHeight: 'auto',editable:false" />
-    
-    					</td>
-					</tr>
-					<tr>
-						<td>选择文件</td>
-						<td><input type="file" name="file" class="easyui-validatebox" required="true"/></td>
-					</tr>
-					</table>
-			</form>
-		</div>
-		
-		
-		
-	</div>
-	
-	
-	
-	
-	<div class="easyui-window" title="区域添加修改" id="editCourseWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
-		<div region="north" style="height:31px;overflow:hidden;" split="false" border="false" >
-			<div class="datagrid-toolbar">
-				<a id="editInfo" icon="icon-save" href="#" class="easyui-linkbutton" plain="true" >保存</a>
-			</div>
-		</div>
-		
-		<div region="center" style="overflow:auto;padding:5px;" border="false">
-			<form id="editCourseForm"  action="courseAction_editInfo.action" method="post">
-				<table class="table-edit" width="80%" align="center">
-					<tr class="title">
-						<td colspan="2">学生信息</td>
-					</tr>
-					<input type="hidden" name="courseId" class="easyui-validatebox"/>
-					
-					<tr>
-						<td>学生姓名</td>
-						<td><input type="text" name="name" class="easyui-validatebox" required="true"/></td>
-					</tr>
-					<tr>
-						<td>性别</td>
-						<td><input type="text" name="sex" class="easyui-validatebox" required="true"/></td>
-					</tr>
-					<input type="hidden" name="password" class="easyui-validatebox"/>
-					<tr>
-						<td>专业</td>
-						<td><input type="text" name="profession" class="easyui-validatebox" required="true"/></td>
-					</tr>
-					<tr>
-						<td>出生日期</td>
-						<td><input type="text" name="birthday" id="time" class="easyui-datebox" required="true"/></td>
-					</tr>
-					<tr>
-						<td>家庭地址</td>
-						<td><input type="text" name="address" class="easyui-validatebox" required="true"/></td>
-					</tr>
-					<tr>
-						<td>联系方式</td>
-						<td>
-						<script type="text/javascript">
+								<script type="text/javascript">
 								$(function(){
 									//为保存按钮绑定事件
 									$("#editInfo").click(function(){
 										//表单校验，如果通过，提交表单
 										var v = $("#editCourseForm").form("validate");
 										if(v){
-											//$("#addStaffForm").form("submit");
 											$("#editCourseForm").submit();
 										}
 									});
-									
-									var reg = /^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8}$/;
-									//扩展手机号校验规则
-									$.extend($.fn.validatebox.defaults.rules, { 
-										telephone: { 
-											validator: function(value,param){ 
-											return reg.test(value);
-										}, 
-											message: '手机号输入有误！' 
-										}
-										}); 
-									
-									var emailreg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
-									$.extend($.fn.validatebox.defaults.rules, { 
-										email: { 
-											validator: function(value,param){ 
-											return reg.test(value);
-										}, 
-											message: '邮箱格式有误！' 
-										}
-										});
-									
+																
 									});
-								$('#time').datebox({   
-								    editable:false  
-								});
 								
-							</script>
-						<input type="text" name="tel" data-options="validType:'telephone'"   class="easyui-validatebox" required="true"/></td>
+								
+							</script> 
+							<select class="easyui-combobox" name="courseOpen" data-options="panelHeight: 'auto',editable:false" style="width:100px">  
+							    <option value="1">公开</option>  
+							    <option value="0">不公开</option>  
+							</select> 
+						</td>
 					</tr>
-					<tr>
-						<td>邮箱地址</td>
-						<td><input type="text" name="email" class="easyui-validatebox" required="true"/></td>
-					</tr>
+					<!--  <tr>
+						<td>发布人</td>
+						<td><input class="easyui-combobox" style="width:100px" name="teacher.teacherId"  
+    							data-options="valueField:'teacherId',textField:'teachername',
+    							url:'teacherAction_listajax.action',panelHeight: 'auto',editable:false" />
+    
+    					</td>
+					</tr>-->
 					</table>
 			</form>
 		</div>
 	</div>
-	
 	<!-- 查询学生 -->
 	<div class="easyui-window" title="查询学生窗口" id="searchWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
 		<div style="overflow:auto;padding:5px;" border="false">

@@ -33,13 +33,13 @@
 			href:'page_portal_gonggao.action'
 		}, {
 			id : 'p2',
-			title : '代办事宜',
+			title : '待解决问题',
 			height : 255,
 			collapsible : true,
 			href:'page_portal_daiban.action'
 		}, {
 			id : 'p3',
-			title : '预警信息',
+			title : '最新学员',
 			height : 255,
 			collapsible : true,
 			href:'page_portal_yujing.action'

@@ -1,5 +1,6 @@
 package com.fei.web.interceptor;
 
+import com.fei.domain.Studentinfo;
 import com.fei.domain.User;
 import com.fei.utils.CommonUtils;
 import com.opensymphony.xwork2.ActionInvocation;
@@ -12,6 +13,7 @@ public class CourseLoginInterceptor extends MethodFilterInterceptor{
 	 */
 	protected String doIntercept(ActionInvocation invocation) throws Exception {
 		User user = CommonUtils.getLoginUser();
+		Studentinfo student = CommonUtils.getLoginStudent();
 		if(user == null){
 			//没有登录，跳转到登录页面
 			return "login";

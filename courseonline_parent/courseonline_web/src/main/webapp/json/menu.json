@@ -4,7 +4,11 @@
 		{ "id":"113", "pId":"11", "name":"学生信息","page":"page_base_student.action"},
 		{ "id":"12", "pId":"0", "name":"资料管理"},
 		{ "id":"121", "pId":"12", "name":"教程资源" ,"page":"page_datum_coursedatum.action"},
-		{ "id":"13", "pId":"0", "name":"调度"},
-		{ "id":"131", "pId":"13", "name":"查台转单","page":""},
-		{ "id":"132", "pId":"13", "name":"人工调度","page":"page_qupai_diaodu.action"}
+		{ "id":"13", "pId":"0", "name":"在线考评管理"},
+		{ "id":"131", "pId":"13", "name":"题目管理","page":"page_subject_subject.action"},
+		{ "id":"14", "pId":"0", "name":"在线课程管理"},
+		{ "id":"141", "pId":"14", "name":"课程管理","page":"page_lesson_lesson.action"},
+		{ "id":"142", "pId":"14", "name":"视频管理","page":"page_lesson_vedio.action"},
+		{ "id":"143", "pId":"14", "name":"公告管理","page":"page_lesson_notice.action"},
+		{ "id":"144", "pId":"14", "name":"资料管理","page":"page_lesson_materia.action"},
 ]

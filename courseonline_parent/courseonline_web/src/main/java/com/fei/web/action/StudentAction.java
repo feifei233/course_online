@@ -24,8 +24,10 @@ import org.hibernate.criterion.Restrictions;
 import com.fei.domain.Studentinfo;
 import com.fei.domain.Teacher;
 import com.fei.service.IStudentService;
-import com.fei.utils.FileUtils;
+import com.fei.utils.MD5Utils;
+import com.fei.utils.NewFileUtils;
 import com.fei.web.action.base.BaseAction;
+import com.opensymphony.xwork2.ActionContext;
 
 @Controller
 @Scope("prototype")
@@ -41,6 +43,17 @@ public class StudentAction extends BaseAction<Studentinfo>{
 		this.studentFile = studentFile;
 	}
 
+	
+	public String regist(){
+		String pwd = MD5Utils.md5(model.getPassword());
+		model.setPassword(pwd);
+		studentService.save(model);
+		return "tologin";
+	}
+	
+	
+	
+	
 	/**
 	 * 分页查询显示列表
 	 * @throws IOException 
@@ -67,17 +80,17 @@ public class StudentAction extends BaseAction<Studentinfo>{
 		}
 		
 		
-		Teacher teacher = model.getTeacher();
-		if(teacher != null){
-			String teachername = teacher.getTeachername();
-			dc.createAlias("teacher", "t");
-			if(StringUtils.isNotBlank(teachername)){
-				dc.add(Restrictions.like("t.name", "%"+teachername+"%"));
-			}
-		}
+//		Teacher teacher = model.getTeacher();
+//		if(teacher != null){
+//			String teachername = teacher.getTeachername();
+//			dc.createAlias("teacher", "t");
+//			if(StringUtils.isNotBlank(teachername)){
+//				dc.add(Restrictions.like("t.name", "%"+teachername+"%"));
+//			}
+//		}
 		studentService.pageQuery(pageBean);
 		this.java2Json(pageBean, new String[]{"currentPage","detachedCriteria","pageSize",
-						"studentsPostses","studentinfos","courseinfos","postses","notices"});
+						"studentsPostses","studentinfos","courseinfos","postses","notices","teacher"});
 		return NONE;
 	}
 	
@@ -98,6 +111,22 @@ public class StudentAction extends BaseAction<Studentinfo>{
 	}
 	
 	
+	public String fronteditInfo(){
+		Studentinfo student = studentService.findById(model.getStudentId());
+		student.setName(model.getName());
+		student.setSex(model.getSex());
+		//student.setPassword(model.getPassword());
+		student.setProfession(model.getProfession());
+		student.setBirthday(model.getBirthday());
+		student.setAddress(model.getAddress());
+		student.setTel(model.getTel());
+		student.setEmail(model.getEmail());
+		
+		studentService.update(student);
+		ActionContext.getContext().put("studentInfo", student);
+		return "frontsuccess";
+	}
+	
 	public String importXls() throws FileNotFoundException, IOException{
 		List<Studentinfo> studentList = new ArrayList<Studentinfo>();
 		//使用POI解析Excel文件
@@ -113,18 +142,18 @@ public class StudentAction extends BaseAction<Studentinfo>{
 			String name = row.getCell(1).getStringCellValue();
 			String sex = row.getCell(2).getStringCellValue();
 			String profession = row.getCell(3).getStringCellValue();
-			String  password = row.getCell(4).getStringCellValue();
-			String address = row.getCell(5).getStringCellValue();
-			String tel = row.getCell(6).getStringCellValue();
-			String email = row.getCell(7).getStringCellValue();
+			String  password = MD5Utils.md5("1234");
+			String address = row.getCell(4).getStringCellValue();
+			String tel = row.getCell(5).getStringCellValue();
+			String email = row.getCell(6).getStringCellValue();
 			//包装一个区域对象
-			Studentinfo student = new Studentinfo(studentId,null, name,sex,password,profession,null,address,tel,email,null);
+			Studentinfo student = new Studentinfo(studentId,null, name,sex,password,profession,null,address,tel,email,null,null,null);
 			studentList.add(student);
 			
 		}
 		//批量保存
 		studentService.saveBatch(studentList);
-		return NONE;
+		return LIST;
 	}
 	
 	private String ids;
@@ -142,9 +171,9 @@ public class StudentAction extends BaseAction<Studentinfo>{
 	 * @return
 	 */
 	public String add(){
-		
+		String password = MD5Utils.md5("1234");
+		model.setPassword(password);
 		studentService.save(model);
-		
 		return LIST;
 	}
 
@@ -205,11 +234,20 @@ public class StudentAction extends BaseAction<Studentinfo>{
 		
 		//获取客户端浏览器类型
 		String agent = ServletActionContext.getRequest().getHeader("User-Agent");
-		filename = FileUtils.encodeDownloadFilename(filename, agent);
+		filename = NewFileUtils.encodeDownloadFilename(filename, agent);
 		ServletActionContext.getResponse().setHeader("content-disposition", "attachment;filename="+filename);
 		workbook.write(out);
 		
 		return NONE;
 	}
 	
+
+	
+	public String myinfo(){
+		
+		
+		Studentinfo student = studentService.findById(model.getStudentId());
+		ActionContext.getContext().put("studentInfo", student);
+		return "myinfo";
+	}
 }

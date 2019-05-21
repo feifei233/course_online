@@ -23,4 +23,7 @@ public interface IBaseDao<T> {
 	public List<T> findByCriteria(DetachedCriteria detachedCriteria);
 	public void executeUpdate(String queryname,Object...objects);
 	public void pageQuery(PageBean pageBean);
+	Integer getTotalCount(DetachedCriteria dc);
+	List<T> getPageList(DetachedCriteria dc,Integer start,Integer pageSize);
+
 }

@@ -12,5 +12,7 @@ public interface ITeacherDao extends IBaseDao<Teacher>{
 
 	List<Teacher> findListByQ(String q);
 
+	Teacher findStudentByNameAndPassword(Integer teacher_id, String password);
+
 
 }

@@ -52,7 +52,7 @@
     	UPDATE Teacher SET deltag ='1' WHERE teacher_id=?
     </query>
     <query name="teacher.initPassword">
-    	UPDATE Teacher SET password ='123456' WHERE teacher_id=?
+    	UPDATE Teacher SET password =md5(1234) WHERE teacher_id=?
     </query>
     <query name="teacher.restore">
     	UPDATE Teacher SET deltag = '0' WHERE teacher_id=?

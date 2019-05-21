@@ -111,22 +111,26 @@
 		title : '性别',
 		width : 100,
 		align : 'center'
-	}, {
+	}
+	/* , {
 		field : 'password',
 		title : '登录密码',
 		width : 120,
 		align : 'center'
-	}, {
+	} */
+	, {
 		field : 'profession',
 		title : '专业',
 		width : 120,
 		align : 'center'
-	}, {
+	},
+	/* {
 		field : 'birthday',
 		title : '出生日期',
 		width : 120,
 		align : 'center'
-	} , {
+	},  */
+	{
 		field : 'address',
 		title : '家庭地址',
 		width : 200,
@@ -141,7 +145,7 @@
 		title : '邮箱地址',
 		width : 120,
 		align : 'center'
-	}, {
+	}/*, {
 		field : 'teachername',
 		title : '授课教师',
 		width : 120,
@@ -154,7 +158,7 @@
 				return null;
 			}
 		}
-	}] ];
+	}*/] ];
 	
 	$(function(){
 		// 先将body隐藏，再显示，不会出现页面刷新效果
@@ -453,10 +457,10 @@
 						<td>专业</td>
 						<td><input type="text" name="profession"/></td>
 					</tr>
-					<tr>
+				<!-- 	<tr>
 						<td>授课教师</td>
 						<td><input type="text" name="teacher.name"/></td>
-					</tr>
+					</tr> -->
 					<tr>
 						<td colspan="2"><a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a> </td>
 					</tr>

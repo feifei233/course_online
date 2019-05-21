@@ -20,7 +20,7 @@
             <column name="sex" length="6" />
         </property>
         <property name="password" type="java.lang.String">
-            <column name="password" length="12" />
+            <column name="password" length="32" />
         </property>
         <property name="profession" type="java.lang.String">
             <column name="profession" length="10" />

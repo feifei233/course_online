@@ -105,4 +105,25 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements IBaseDao<T> {
 	public List<T> findByCriteria(DetachedCriteria detachedCriteria) {
 		return (List<T>) this.getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
+	
+	@Override
+	public Integer getTotalCount(DetachedCriteria dc) {
+		dc.setProjection(Projections.rowCount());
+		List<Long> list = (List<Long>) getHibernateTemplate().findByCriteria(dc);
+		dc.setProjection(null);
+		if(list!=null && list.size()>0){
+			Long count = list.get(0);
+			return count.intValue();
+		}else{
+			
+			return null;
+		}
+	}
+
+	@Override
+	public List<T> getPageList(DetachedCriteria dc, Integer start, Integer pageSize) {
+		List<T> list = (List<T>) getHibernateTemplate().findByCriteria(dc, start, pageSize);
+		return list;
+	}
+	
 }

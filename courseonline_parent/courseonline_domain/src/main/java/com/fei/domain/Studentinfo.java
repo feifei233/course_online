@@ -24,7 +24,9 @@ public class Studentinfo  implements java.io.Serializable {
      private String tel;
      private String email;
      private Set studentsPostses = new HashSet(0);
-
+     
+     private Integer result;
+     private String sclass;
 
     // Constructors
 
@@ -38,7 +40,8 @@ public class Studentinfo  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public Studentinfo(String studentId, Teacher teacher, String name, String sex, String password, String profession, String birthday, String address, String tel,String email,Set studentsPostses) {
+    public Studentinfo(String studentId, Teacher teacher, String name, String sex, String password, String profession, String birthday, String address, String tel,String email,Set studentsPostses
+    		,Integer result,String sclass) {
         this.studentId = studentId;
         this.teacher = teacher;
         this.name = name;
@@ -50,6 +53,8 @@ public class Studentinfo  implements java.io.Serializable {
         this.tel = tel;
         this.email = email;
         this.studentsPostses = studentsPostses;
+        this.result = result;
+        this.sclass = sclass;
     }
 
    
@@ -144,6 +149,24 @@ public class Studentinfo  implements java.io.Serializable {
     public void setStudentsPostses(Set studentsPostses) {
         this.studentsPostses = studentsPostses;
     }
+
+	
+
+	public Integer getResult() {
+		return result;
+	}
+
+	public void setResult(Integer result) {
+		this.result = result;
+	}
+
+	public String getSclass() {
+		return sclass;
+	}
+
+	public void setSclass(String sclass) {
+		this.sclass = sclass;
+	}
    
 
 

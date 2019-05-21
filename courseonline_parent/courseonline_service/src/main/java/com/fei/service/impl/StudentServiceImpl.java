@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fei.dao.IStudentDao;
 import com.fei.domain.Studentinfo;
 import com.fei.service.IStudentService;
+import com.fei.utils.MD5Utils;
 import com.fei.utils.PageBean;
 
 @Service
@@ -78,5 +79,26 @@ public class StudentServiceImpl implements IStudentService {
 	public List<Studentinfo> findAll() {
 		return studentDao.findAll();
 	}
+
+	@Override
+	public boolean allowLogin(String id, String password) {
+		String pw = MD5Utils.md5(password);
+		
+		Studentinfo student =  studentDao.findStudentByNameAndPassword(id,pw);
+		
+		if(student!=null){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	@Override
+	public List<Studentinfo> findNewById(String studentId) {
+		
+		return studentDao.findNewById(studentId);
+	}
+
+
 
 }

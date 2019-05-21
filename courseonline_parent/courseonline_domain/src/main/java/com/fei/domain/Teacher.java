@@ -13,10 +13,10 @@ public class Teacher  implements java.io.Serializable {
 
     // Fields    
 
-     private Integer teacherId;
+     private Integer  teacherId;
      private String teachername;
      private String tel;
-     private String password = "123456";
+     private String password = "1234";
      private String deltag = "0";
      private Set studentinfos = new HashSet(0);
      private Set courseinfos = new HashSet(0);

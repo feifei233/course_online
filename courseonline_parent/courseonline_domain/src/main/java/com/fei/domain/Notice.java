@@ -1,93 +1,63 @@
 package com.fei.domain;
 
-
-
 /**
  * Notice entity. @author MyEclipse Persistence Tools
  */
 
-public class Notice  implements java.io.Serializable {
+public class Notice implements java.io.Serializable {
 
+	// Fields
 
-    // Fields    
+	private String nid;
+	private String ncontent;
+	private String ntime;
+	private String ncid;
 
-     private Integer id;
-     private Teacher teacher;
-     private String title;
-     private String content;
-     private String date;
+	// Constructors
 
+	/** default constructor */
+	public Notice() {
+	}
 
-    // Constructors
+	/** full constructor */
+	public Notice(String ncontent, String ntime, String ncid) {
+		this.ncontent = ncontent;
+		this.ntime = ntime;
+		this.ncid = ncid;
+	}
 
-    /** default constructor */
-    public Notice() {
-    }
+	// Property accessors
 
-	/** minimal constructor */
-    public Notice(Integer id, String title) {
-        this.id = id;
-        this.title = title;
-    }
-    
-    /** full constructor */
-    public Notice(Integer id, Teacher teacher, String title, String content, String date) {
-        this.id = id;
-        this.teacher = teacher;
-        this.title = title;
-        this.content = content;
-        this.date = date;
-    }
+	public String getNid() {
+		return this.nid;
+	}
 
-   
-    // Property accessors
+	public void setNid(String nid) {
+		this.nid = nid;
+	}
 
-    public Integer getId() {
-        return this.id;
-    }
-    
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public String getNcontent() {
+		return this.ncontent;
+	}
 
-    public Teacher getTeacher() {
-        return this.teacher;
-    }
-    
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
+	public void setNcontent(String ncontent) {
+		this.ncontent = ncontent;
+	}
 
-    public String getTitle() {
-        return this.title;
-    }
-    
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	public String getNtime() {
+		return this.ntime;
+	}
 
-    public String getContent() {
-        return this.content;
-    }
-    
-    public void setContent(String content) {
-        this.content = content;
-    }
+	public void setNtime(String ntime) {
+		this.ntime = ntime;
+	}
 
-    public String getDate() {
-        return this.date;
-    }
-    
-    public void setDate(String date) {
-        this.date = date;
-    }
-   
+	public String getNcid() {
+		return this.ncid;
+	}
 
-
-
-
-
-
-
+	public void setNcid(String ncid) {
+		this.ncid = ncid;
+	}
 
 }

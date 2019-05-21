@@ -15,12 +15,12 @@ public class Courseinfo  implements java.io.Serializable {
      private Teacher teacher;
      private String courseJj;
      private String courseName;
-     private Integer courseType;
+     private String courseType;
      private String courseFbrq;
      private String url;
-     private String courseOpen;
-     private Integer courseClicksum;
-
+     private String courseOpen = "1";
+     private Integer courseClicksum=0;
+     private String imageurl;
 
     // Constructors
 
@@ -35,7 +35,7 @@ public class Courseinfo  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public Courseinfo(String courseId, Teacher teacher, String courseJj, String courseName, Integer courseType, String courseFbrq,String url,String courseOpen, Integer courseClicksum) {
+    public Courseinfo(String courseId, Teacher teacher, String courseJj, String courseName, String courseType, String courseFbrq,String url,String courseOpen, Integer courseClicksum,String imageurl) {
         this.courseId = courseId;
         this.teacher = teacher;
         this.courseJj = courseJj;
@@ -45,6 +45,7 @@ public class Courseinfo  implements java.io.Serializable {
         this.url = url;
         this.courseOpen = courseOpen;
         this.courseClicksum = courseClicksum;
+        this.imageurl = imageurl;
     }
 
    
@@ -82,11 +83,11 @@ public class Courseinfo  implements java.io.Serializable {
         this.courseName = courseName;
     }
 
-    public Integer getCourseType() {
+    public String getCourseType() {
         return this.courseType;
     }
     
-    public void setCourseType(Integer courseType) {
+    public void setCourseType(String courseType) {
         this.courseType = courseType;
     }
 
@@ -122,6 +123,14 @@ public class Courseinfo  implements java.io.Serializable {
     public void setCourseClicksum(Integer courseClicksum) {
         this.courseClicksum = courseClicksum;
     }
+
+	public String getImageurl() {
+		return imageurl;
+	}
+
+	public void setImageurl(String imageurl) {
+		this.imageurl = imageurl;
+	}
    
 
 

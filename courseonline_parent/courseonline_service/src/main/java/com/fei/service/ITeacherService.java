@@ -13,7 +13,7 @@ public interface ITeacherService {
 
 	public void deleteBatch(String ids);
 
-	public Teacher findById(Integer teacherId);
+	public Teacher findById(Integer id);
 
 	public void update(Teacher teacher);
 
@@ -22,5 +22,8 @@ public interface ITeacherService {
 	public void restoreBatch(String ids);
 	
 	public List<Teacher> findListNotDelete();
+
+	public boolean allowLogin(Integer teacher_id, String password);
+
 
 }

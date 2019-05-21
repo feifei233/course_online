@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fei.dao.ITeaDao;
 import com.fei.dao.ITeacherDao;
 import com.fei.domain.Teacher;
 import com.fei.service.ITeacherService;
@@ -21,12 +22,16 @@ public class TeacherServiceImpl implements ITeacherService{
 
 	@Autowired
 	private ITeacherDao teacherDao;
+	@Autowired
+	private ITeaDao teaDao;
+	
 	
 	public void save(Teacher model) {
 		
-//		String password =MD5Utils.md5(model.getPassword());
-//		model.setPassword(password);
+		String password =MD5Utils.md5(model.getPassword());
+		model.setPassword(password);
 		teacherDao.save(model);
+		teaDao.saveFromteacher(Integer.toString(model.getTeacherId()),model.getPassword());
 	}
 
 	/**
@@ -53,7 +58,7 @@ public class TeacherServiceImpl implements ITeacherService{
 	/**
 	 * 通过id查找对象
 	 */
-	public Teacher findById(Integer teacherId) {
+	public Teacher findById(String teacherId) {
 		return teacherDao.findById(teacherId);
 	}
 
@@ -62,6 +67,7 @@ public class TeacherServiceImpl implements ITeacherService{
 	 */
 	public void update(Teacher teacher) {
 		teacherDao.update(teacher);
+		teaDao.updateFromteacher(Integer.toString(teacher.getTeacherId()),teacher.getPassword());
 	}
 
 	/**
@@ -100,5 +106,24 @@ public class TeacherServiceImpl implements ITeacherService{
 		//detachedCriteria.add(Restrictions.ne("deltag", "1"));
 		return teacherDao.findByCriteria(detachedCriteria);
 	}
+
+	@Override
+	public Teacher findById(Integer id) {
+		return teacherDao.findById(id);
+	}
+
+	@Override
+	public boolean allowLogin(Integer teacher_id, String password) {
+		String pw = MD5Utils.md5(password);
+		Teacher teacher = teacherDao.findStudentByNameAndPassword(teacher_id,pw);
+		if(teacher==null){
+			return false;
+		}else{
+			return true;
+		}
+	}
+
+
+
 
 }

@@ -4,16 +4,16 @@
     "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
 	<constant name="struts.devMode" value="false" />
- 
+ 	<constant name="struts.multipart.maxSize" value="629145600000"/> 
 	<constant name="struts.objectFactory" value="spring"/>
 	<constant name="struts.multipart.saveDir" value="/tmp"/>
 	<package name="basicstruts2" extends="struts-default">
 	
 		<interceptors>
-			<!-- 注册自定义拦截器 -->
+			<!-- 注册自定义拦截器 frontlist,frontadd,frontlogin,frontlistajax,frontlist1,frontlist2,downloadFile-->
 			<interceptor name="courseLoginInterceptor" class="com.fei.web.interceptor.CourseLoginInterceptor">
 				<!-- 指定哪些方法不需要拦截 -->
-				<param name="excludeMethods">login</param>
+				<param name="excludeMethods">myinfo,fronteditInfo,logout,regist,login,frontlist,frontadd,frontlogin,frontlistajax,frontlist1,frontlist2,downloadFile,fronthome</param>
 			</interceptor>
 			<!-- 定义拦截器栈 -->
 			<interceptor-stack name="myStack">
@@ -26,6 +26,7 @@
 		<!-- 全局结果集定义 -->
 		<global-results>
 			<result name="login">/login.jsp</result>
+			
 		</global-results>
 	
 	
@@ -44,6 +45,120 @@
 		<!-- 学生信息管理 -->
 		<action name="studentAction_*" class="studentAction" method="{1}">
 			<result name="list">/WEB-INF/pages/base/student.jsp</result>
+			<result name="tologin">/enewmoc4/login.jsp</result>
+			<result name="frontsuccess">/enewmoc4/studentinfo.jsp</result>
+			<result name="myinfo">/enewmoc4/studentinfo.jsp</result>
+			
+		</action>
+		
+		<!-- 课程管理 -->
+		<action name="lessonAction_*" class="lessonAction" method="{1}">
+			<result name="list">/WEB-INF/pages/lesson/lesson.jsp</result>
+			<result name="frontlist">/enewmoc4/courselist.jsp</result>
+			<result name="frontlist1">/enewmoc4/coursecont.jsp</result>
+			<result name="frontlist2">/enewmoc4/coursecont1.jsp</result>
+			 <result name="frontlogin">/enewmoc4/login.jsp</result>
+			 <result name="fronthome">/enewmoc4/studentcourse.jsp</result>
+		</action>
+		
+		
+		<!-- 评论管理  <param name="namespace">/enewmoc4/coursecont1.jsp</param>-->
+		<action name="lessonScoreAction_*" class="lessonScoreAction" method="{1}">
+			
+			<result name="frontlist2">/enewmoc4/coursecont1.jsp</result>
+			<result name="frontadd" type="chain">
+				<param name="actionName">lessonAction_frontlist2</param>
+				<param name="studentId">${sid}</param>
+				<param name="cid">${cid}</param>
+			</result>
+		</action>
+		
+		
+		
+		
+		
+		<!-- 教程资源管理 -->
+		<action name="courseAction_*" class="courseAction" method="{1}">
+				<interceptor-ref name="defaultStack">  
+                <!-- 允许上传的文件的扩展名,多个扩展名用逗号分隔 -->  
+                <param name="fileUpload.allowedExtensions">.doc,.docx,.txt,.pdf,.mp4,.flv,.avi,.ppt,.pptx,.xls,.jpg,.gif</param>  
+                <param name="fileUpload.maximumSize">104857600000</param> 
+           		 </interceptor-ref>  
+              
+            <result name="error">/404.html</result>  
+            <result name="list">/WEB-INF/pages/datum/coursedatum.jsp</result>
+             <result name="listerror">/WEB-INF/pages/datum/coursedatumerror.jsp</result>
+            <result name="download" type="stream">
+                <!-- 允许下载的文件的类型：指定为所有的二进制的文件类型，去tomcat的wen.xml里面搜索.exe -->    
+                <param name="contentType">application/octet-stream</param>
+               <!-- 对应的就是Action种的属性，返回流的属性，【其实就是getAttrInputStream()】 -->
+               
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">attachment;filename="${downFileName}"</param>
+                <!-- 缓冲区大小设置 -->
+                <param name="bufferSize">4096</param>          
+             </result>
+             <result name="frontlist">/enewmoc4/vedio.jsp</result>
+		</action>
+		<!-- 题目信息管理-->
+		<action name="subjectAction_*" class="subjectAction" method="{1}">
+			<result name="list">/WEB-INF/pages/subject/subject.jsp</result>
+		</action>
+		
+		<!-- 公告信息管理-->
+		<action name="noticeAction_*" class="noticeAction" method="{1}">
+			<result name="list">/WEB-INF/pages/lesson/notice.jsp</result>
+		</action>
+		
+		<!-- 选课信息管理-->
+		<action name="chooseAction_*" class="chooseAction" method="{1}">
+			<result name="list">/WEB-INF/pages/choose/chooselesson.jsp</result>
+			<result name="frontlist1">/enewmoc4/coursecont.jsp</result>
+		</action>
+		<!-- 前台登录管理-->
+		<action name="loginAction_*" class="loginAction" method="{1}">
+			<result name="teacherSuccess" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">lessonAction_frontlist</param>
+			</result>
+			<result name="studentSuccess">/enewmoc4/studentcourse.jsp</result>
+			<result name="input">/enewmoc4/login.jsp</result>
+			<result name="frontlogin">/enewmoc4/login.jsp</result>
+		</action>
+		<!-- 教程资源管理 -->
+		<action name="vedioAction_*" class="vedioAction" method="{1}">
+              
+            <result name="error">/404.html</result>  
+            <result name="list">/WEB-INF/pages/lesson/vedio.jsp</result>
+             <result name="frontlist">/enewmoc4/video.jsp</result>
+             <result name="listerror">/WEB-INF/pages/lesson/vedioerror.jsp</result>
+            <result name="download" type="stream">
+                <!-- 允许下载的文件的类型：指定为所有的二进制的文件类型，去tomcat的wen.xml里面搜索.exe -->    
+                <param name="contentType">application/octet-stream;charset=ISO8859-1</param>
+               <!-- 对应的就是Action种的属性，返回流的属性，【其实就是getAttrInputStream()】 -->
+               
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">attachment;filename="${downFileName}"</param>
+                <!-- 缓冲区大小设置 -->
+                <param name="bufferSize">4096</param>          
+             </result>
+		</action>
+		<!-- 教程资料管理 -->
+		<action name="materiaAction_*" class="materiaAction" method="{1}">
+              
+            <result name="error">/404.html</result>  
+            <result name="list">/WEB-INF/pages/lesson/materia.jsp</result>
+             <result name="listerror">/WEB-INF/pages/lesson/materiaerror.jsp</result>
+            <result name="download" type="stream">
+                <!-- 允许下载的文件的类型：指定为所有的二进制的文件类型，去tomcat的wen.xml里面搜索.exe -->    
+                <param name="contentType">application/octet-stream;charset=ISO8859-1</param>
+               <!-- 对应的就是Action种的属性，返回流的属性，【其实就是getAttrInputStream()】 -->
+               
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">attachment;filename="${downFileName}"</param>
+                <!-- 缓冲区大小设置 -->
+                <param name="bufferSize">4096</param>          
+             </result>
 		</action>
 	</package>
 </struts>
